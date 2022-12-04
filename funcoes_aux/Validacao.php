@@ -1,6 +1,5 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT']."/BibliIF/conexao/Conexao.php";
-
 function validar_email($email){
     if(preg_match("/[a-z0-9.\-\_]+@(aluno.iffar.edu.br|iffarroupilha.com)/", $email)){
         return true;
@@ -45,9 +44,7 @@ function validar_bool($bool){
 }
 function validar_cpf($cpf) {
     // Código Para Validar CPF - Fonte:https://gist.github.com/rafael-neri/ab3e58803a08cb4def059fce4e3c0e40
-    // Extrai somente os números
-    $cpf = preg_replace( '/[^0-9]/is', '', $cpf );
-     
+    
     // Verifica se foi informado todos os digitos corretamente
     if (strlen($cpf) != 11) {
         return false;

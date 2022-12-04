@@ -2,55 +2,57 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . "/BibliIF/funcoes_aux/Validacao.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/BibliIF/conexao/Conexao.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/BibliIF/funcoes_aux/img.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/BibliIF/model/Usuario.php";
 
 $con = start_connection();
 $result_curso = $con->query("SELECT * FROM curso;");
 $result_biblioteca = $con->query("SELECT * FROM biblioteca;");
 
 if (isset($_POST['submit'])) {
+    
+    $u = new Usuario;
+    $u->Usuario($con->real_escape_string($_POST['nome']),
+    $con->real_escape_string($_POST['cpf']),
+    $con->real_escape_string($_POST['email']),
+    $con->real_escape_string($_POST['senha']),
+    $con->real_escape_string($_POST['matricula']),
+    $con->real_escape_string($_POST['curso']),
+    $con->real_escape_string($_POST['Estudante']),
+    $con->real_escape_string($_POST['afastado']),
+    $con->real_escape_string($_POST['biblioteca']));
+    
+    $u->set_cpf(preg_replace( '/[^0-9]/is', '', $u->get_cpf()));
 
-    $nome = $con->real_escape_string($_POST['nome']);
-    $cpf = $con->real_escape_string($_POST['cpf']);
-    $email = $con->real_escape_string($_POST['email']);
-    $senha = $con->real_escape_string($_POST['senha']);
-    $matricula = $con->real_escape_string($_POST['matricula']);
-    $curso = $con->real_escape_string($_POST['curso']);
-    $isEstudante = $con->real_escape_string($_POST['isEstudante']);
-    $estaAfastado = $con->real_escape_string($_POST['afastado']);
-    $biblioteca = $con->real_escape_string($_POST['biblioteca']);
-
-    if (!validar_cpf($cpf)) {
+    if (!validar_cpf($u->get_cpf())) {
         die("CPF invalido");
     }
-    if (!validar_email($email)) {
+    if (!validar_email($u->get_email())) {
         die("E-mail invalido");
     }
-    if (!validar_matricula($matricula)) {
+    if (!validar_matricula($u->get_matricula())) {
         die("Matricula invalida");
     }
-    if (!validar_senha($senha)) {
+    if (!validar_senha($u->get_senha())) {
         die("A senha ter no minimo 8 caracteres com letras maiusculas, minusculas, numero e simbolos");
     }
-    if (!validar_id($curso, "curso")) {
+    if (!validar_id($u->getID_curso(), "curso")) {
         die("Curso invalido");
     }
-    if (!validar_id($biblioteca, "biblioteca")) {
+    if (!validar_id($u->getID_biblioteca(), "biblioteca")) {
         die("Biblioteca invalido");
     }
-    if (!validar_bool($isEstudante)) {
+    if (!validar_bool($u->is_Estudante())) {
         die("Valor invalido");
     }
-    if (!validar_bool($estaAfastado)) {
+    if (!validar_bool($u->esta_Afastado())) {
         die("Valor invalido");
     }
-    if(!$path_img_perfil = img($_FILES['imagem'], "foto_perfil")){
-        die("Arquivo Invalido");
-    }
+    
+    $u->set_perfilImg(img($_FILES['imagem'], "foto_perfil"));
 
-    $senha = password_hash($senha, PASSWORD_DEFAULT);
+    $u->set_senha(password_hash($u->get_senha(), PASSWORD_DEFAULT));
 
-    $sql = "INSERT INTO usuario(nome, cpf, email, senha, matricula, curso, isEstudante, estaAfastado, biblioteca, perfilImg) VALUES ('$nome', '$cpf', '$email', '$senha', '$matricula', $curso, $isEstudante, $estaAfastado, $biblioteca, '$path_img_perfil')";
-    $con->query($sql) or die("Deu pau!");
+    $con->query($u->sql_create_query()) or die("Deu pau!");
     $con->close();
     echo ("deu certo");
 }
@@ -91,15 +93,15 @@ if (isset($_POST['submit'])) {
             <select name="curso">
                 <?php
                 while ($curso = mysqli_fetch_assoc($result_curso)) {
-                    echo ("<option value=\"" . $curso['IDcurso'] . "\">" . $curso['nome'] . "</option>");
+                    echo ("<option value=\"" . $curso['IDcurso'] . "\">" . $curso['nomeCurso'] . "</option>");
                 }
                 ?>
             </select>
         </p>
         <p>
             <label>Estudante: </label>
-            <input type="radio" name="isEstudante" value="1"> Estudante
-            <input type="radio" name="isEstudante" value="0"> Servidor
+            <input type="radio" name="Estudante" value="1"> Estudante
+            <input type="radio" name="Estudante" value="0"> Servidor
         </p>
         <p>
             <label>Afastado: </label>
