@@ -84,7 +84,7 @@ if (isset($_POST['submit'])) {
                 <?php
                 while ($curso = mysqli_fetch_assoc($result_curso)) {
                     $select = null;
-                    if ($u->getID_curso() == $curso['IDcurso']){$select = "selected";}
+                    if($u->getID_curso() == $curso['IDcurso']){$select = "selected";}
                     echo ("<option value=\"" . $curso['IDcurso'] . "\" $select>" . $curso['nomeCurso'] . "</option>");
                 }
                 ?>

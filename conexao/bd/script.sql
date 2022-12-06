@@ -36,16 +36,18 @@ create table Usuario(
 create table acervo(
 	IDacervo int auto_increment not null,
     tipoAcervo varchar(100),
-    descAcervo varchar(250)
+    descAcervo varchar(250),
+    primary key(IDacervo)
 );
 create table obra(
 	IDobra int auto_increment not null,
+    tipoObra int,
     isbn varchar(250) not null,
     titulo varchar(250) not null,
     autor varchar(300), 
     tradutor varchar(300),
     subTitulo varchar(250),
-    edição int not null, 
+    edicao int not null, 
     ano int not null,
     lugar varchar(200),
     editora varchar(200),
@@ -57,5 +59,16 @@ create table obra(
     link varchar(200),
     cl varchar (100),
     primary key (IDobra),
-	foreign key biblioteca references biblioteca
+	foreign key (biblioteca) references biblioteca(IDbiblioteca),
+    foreign key (tipoObra) references acervo(IDacervo)
+);
+create table avalicao(
+	IDavaliacao int auto_increment,
+    IDusuario int,
+    IDobra int,
+    mensagem varchar(800),
+    nota int,
+    primary key (IDavaliacao),
+    foreign key (IDusuario) references usuario(IDusuario),
+    foreign key (IDobra) references obra(IDobra)
 );
