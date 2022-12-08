@@ -62,13 +62,3 @@ create table obra(
 	foreign key (biblioteca) references biblioteca(IDbiblioteca),
     foreign key (tipoObra) references acervo(IDacervo)
 );
-create table avalicao(
-	IDavaliacao int auto_increment,
-    IDusuario int,
-    IDobra int,
-    mensagem varchar(800),
-    nota int,
-    primary key (IDavaliacao),
-    foreign key (IDusuario) references usuario(IDusuario),
-    foreign key (IDobra) references obra(IDobra)
-);

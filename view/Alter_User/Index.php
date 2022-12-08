@@ -9,7 +9,6 @@ $result_curso = $con->query("SELECT * FROM curso");
 $result_biblioteca = $con->query("SELECT * FROM biblioteca");
 $u = new Usuario;
 $u->query_db($_GET['usercpf']);
-
 if (isset($_POST['submit'])) {
     if(isset($_POST['nome'])){
         $u->set_nome($con->real_escape_string($_POST['nome']));
@@ -27,7 +26,7 @@ if (isset($_POST['submit'])) {
         $u->set_matricula($con->real_escape_string($_POST['matricula']));
     }
     $u->set_curso($_POST['curso']);
-    $u->set_estudante($_POST['estudante']);
+    $u->set_estudante($_POST['Estudante']);
     $u->set_afastado($_POST['afastado']);
     $u->set_biblioteca($_POST['biblioteca']);
     $u->set_permissao($_POST['permissao']);
@@ -56,79 +55,123 @@ if (isset($_POST['submit'])) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Registrar</title>
+    <link rel="stylesheet" href="../../css/styl.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 </head>
 
 <body>
-    <h2>Alterar Usuario: </h2>
-    <form method="POST">
-        <p>
-            <label>Nome: </label>
-            <input type="text" name="nome" value="<?php echo ($u->get_nome()) ?>">
-        </p>
-        <p>
-            <label>CPF: </label>
-            <input type="text" name="cpf" value="<?php echo ($u->get_cpf()) ?>">
-        </p>
-        <p>
-            <label>E-mail: </label>
-            <input type="text" name="email" value="<?php echo ($u->get_email()) ?>">
-        </p>
-        <p>
-            <label>Matricula: </label>
-            <input type="text" name="matricula" value="<?php echo ($u->get_matricula()) ?>">
-        </p>
-        <p>
-            <label>Curso: </label>
-            <select name="curso">
-                <?php
-                while ($curso = mysqli_fetch_assoc($result_curso)) {
-                    $select = null;
-                    if($u->getID_curso() == $curso['IDcurso']){$select = "selected";}
-                    echo ("<option value=\"" . $curso['IDcurso'] . "\" $select>" . $curso['nomeCurso'] . "</option>");
-                }
-                ?>
-            </select>
-        </p>
-        <p>
-            <label>Estudante: </label>
-            <input type="radio" name="estudante" value="1"<?php if($u->is_Estudante()){echo("checked");}?>> Estudante
-            <input type="radio" name="estudante" value="0"<?php if(!$u->is_Estudante()){echo("checked");}?>> Servidor
-        </p>
-        <p>
-            <label>Afastado: </label>
-            <input type="radio" name="afastado" value="1"<?php if($u->esta_afastado()){echo("checked");}?>> Afastado
-            <input type="radio" name="afastado" value="0"<?php if(!$u->esta_afastado()){echo("checked");}?>> Normal
-        </p>
-        <p>
-            <label>Biblioteca: </label>
-            <select name="biblioteca">
-                <?php
-                while ($biblioteca = mysqli_fetch_assoc($result_biblioteca)) {
-                    $select = null;
-                    if ($u->getID_biblioteca() == $biblioteca['IDbiblioteca']){$select = "selected";}
-                    echo ("<option value=\"" . $biblioteca['IDbiblioteca'] . "\" $select>" . $biblioteca['campus'] . "</option>");
-                }
-                ?>
-            </select>
-        </p>
-        <p>
-            <label>Permissão: </label>
-            <select name="permissao">
-                <option value="leitor" <?php if($u->get_permissao() == "leitor"){echo ("selected");}?>>Leitor</option>
-                <option value="moderador" <?php if($u->get_permissao() == "moderador"){echo ("selected");}?>>Moderador</option>
-                <option value="funcionario" <?php if($u->get_permissao() == "funcionario"){echo ("selected");}?>>Funcionario</option>
-                <option value="adm" <?php if($u->get_permissao() == "adm"){echo ("selected");}?>>Administração</option>
-            </select>
-        </p>
-        <p>
+    <div class="container">
+        <div class="content first-content">
+            <div class="first-column">
+                <img src="../../conexao/bd/img/foto_perfil/<?php echo ($u->get_perfilImg()) ?>" style="border-radius: 50%; width:150px; height:150px; object-fit:cover;">
+                <h2 class="title title-primary">Olá, <?php echo ($u->get_nome()) ?>
+            </div>
+            <div class="second-column">
+                <h2 class="title title-second">Altere dados da sua Conta!</h2>
+                <form class="form" action="" method="POST">
+                    <!--php do site -->
+                    <label class="label-input" for="nome">
+                        <i class="far fa-user icon-modify"></i>
+                        <input type="text" placeholder="Nome Completo" name="nome" id="nome" class="inputUser" required value="<?php echo ($u->get_nome()) ?>">
+                    </label>
 
-        </p>
-        <p>
-            <button type="submit" name="submit">Alterar</button>
-        </p>
-    </form>
-    <a href="../Aviso_R_Senha/?usercpf='<?php echo($_GET['usercpf'])?>'">Clique Aqui para trocar a Senha!</a>
+
+                    <label class="label-input" for="matricula">
+                        <i class="far fa-user icon-modify"></i>
+                        <input type="text" placeholder="Matricula" name="matricula" id="matricula" class="inputUser" required value="<?php echo ($u->get_matricula()) ?>">
+                    </label>
+
+                    <label class="label-input" for="CPF">
+                        <i class="far fa-user icon-modify"></i>
+                        <input type="text" placeholder="CPF" name="cpf" id="CPF" class="inputUser" required value="<?php echo ($u->get_cpf()) ?>">
+                    </label>
+
+                    <label class="label-input" for="email">
+                        <i class="far fa-envelope icon-modify"></i>
+                        <input type="email" placeholder="Email" name="email" id="email" class="inputUser" required value="<?php echo ($u->get_email()) ?>">
+                    </label>
+
+                    <label class="label-input" for="matricula">
+                        <i class="far fa-user icon-modify"></i>
+                        <select name="curso" id="Curso" placeholder="Curso" class="inputeUser">
+                            <?php
+                            while ($curso = mysqli_fetch_assoc($result_curso)) {
+                                $select = null;
+                                if ($u->getID_curso() == $curso['IDcurso']) {
+                                    $select = "selected";
+                                }
+                                echo ("<option value=\"" . $curso['IDcurso'] . "\" $select>" . $curso['nomeCurso'] . "</option>");
+                            }
+                            ?>
+                        </select>
+                    </label>
+
+                    <label class="label-input" for="Estudante">
+                        <i class="far fa-user icon-modify"></i>
+                        <input type="radio" width="10px" placeholder="Estudante" name="Estudante" id="Estudante" class="inputUser" required value="1" <?php if ($u->is_Estudante()) {
+                                                                                                                                                            echo ("checked");
+                                                                                                                                                        } ?>>
+                        Estudante
+                        <input type="radio" name="Estudante" id="Servidor" placeholder="Servidor" class="inputUser" required value="0" <?php if (!$u->is_Estudante()) {
+                                                                                                                                            echo ("checked");
+                                                                                                                                        } ?>>
+                        Servidor
+                    </label>
+
+                    <label class="label-input" for="Afastado">
+                        <i class="far fa-user icon-modify"></i>
+                        <input type="radio" width="10px" placeholder="afastado" name="afastado" id="afastado" class="inputUser" required value="1" <?php if ($u->esta_afastado()) {
+                                                                                                                                                        echo ("checked");
+                                                                                                                                                    } ?>>
+                        Afastado
+                        <input type="radio" name="afastado" id="Normal" placeholder="Normal" class="inputUser" required value="0" <?php if (!$u->esta_afastado()) {
+                                                                                                                                        echo ("checked");
+                                                                                                                                    } ?>>
+                        Normal
+                    </label>
+
+                    <label class="label-input" for="matricula">
+                        <i class="far fa-user icon-modify"></i>
+                        <select name="biblioteca" id="Biblioteca" placeholder="Biblioteca" class="inputeUser">
+                            <?php
+                            while ($biblioteca = mysqli_fetch_assoc($result_biblioteca)) {
+                                $select = null;
+                                if ($u->getID_biblioteca() == $biblioteca['IDbiblioteca']) {
+                                    $select = "selected";
+                                }
+                                echo ("<option value=\"" . $biblioteca['IDbiblioteca'] . "\" $select>" . $biblioteca['campus'] . "</option>");
+                            }
+                            ?>
+                        </select>
+                    </label>
+                    <label class="label-input" for="permissao">Permissão: 
+                    <select name="permissao">
+                        <option value="leitor" <?php if ($u->get_permissao() == "leitor") {
+                                                    echo ("selected");
+                                                } ?>>Leitor</option>
+                        <option value="moderador" <?php if ($u->get_permissao() == "moderador") {
+                                                        echo ("selected");
+                                                    } ?>>Moderador</option>
+                        <option value="funcionario" <?php if ($u->get_permissao() == "funcionario") {
+                                                        echo ("selected");
+                                                    } ?>>Funcionario</option>
+                        <option value="adm" <?php if ($u->get_permissao() == "adm") {
+                                                echo ("selected");
+                                            } ?>>Administração</option>
+                    </select>
+                     </label>
+                    <button class="btn btn-second" type="submit" name="submit" id="submit">Alterar</button>
+                </form>
+            </div><!-- second column -->
+        </div><!-- first content -->
+
+    </div><!-- second column -->
+    </div><!-- second-content -->
+    </div>
+    <!--<script src="app.js"></script>-->
 </body>
 
 </html>

@@ -48,7 +48,11 @@ class Obra{
     }
     function query_db($IDobra){
         global $Con;
-        $results = mysqli_fetch_assoc($Con->query("SELECT isbn, tipoObra, titulo, subtitulo, autor, tradutor, edicao, ano, lugar, editora, biblioteca, descObra, etiqueta, tags, capa, link, cl, tipoAcervo, descAcervo, campus from obra inner join acervo on obra.tipoObra = acervo.IDacervo inner join biblioteca on obra.biblioteca = biblioteca.idbiblioteca where idobra = $IDobra;"));
+        $results = $Con->query("SELECT isbn, tipoObra, titulo, subtitulo, autor, tradutor, edicao, ano, lugar, editora, biblioteca, descObra, etiqueta, tags, capa, link, cl, tipoAcervo, descAcervo, campus from obra inner join acervo on obra.tipoObra = acervo.IDacervo inner join biblioteca on obra.biblioteca = biblioteca.idbiblioteca where idobra = $IDobra;");
+        $results = mysqli_fetch_assoc($results);
+        if ($results == null){
+            return false;
+        }
         $this->IDobra = $IDobra;
         $this->isbn = $results['isbn'];
         $this->tipoObra = $results['tipoObra'];
@@ -70,6 +74,7 @@ class Obra{
         $this->tipoAcervo = $results['tipoAcervo'];
         $this->descAcervo = $results['descAcervo'];
         $this->campus = $results ['campus'];
+        return true;
     }
     function sql_update_query(){
         return "UPDATE obra SET tipoObra = $this->tipoObra, isbn = '$this->isbn', titulo = '$this->titulo', autor =  '$this->autor', tradutor =  '$this->tradutor', subtitulo = '$this->subtitulo', edicao = '$this->edicao', biblioteca = $this->biblioteca, descObra = '$this->descObra', etiqueta = '$this->etiqueta', tags = '$this->tags', link = '$this->link', cl = '$this->cl' WHERE IDobra = $this->IDobra;";
